@@ -1,0 +1,126 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+    <div id="app">
+
+        <h1>Device</h1>
+
+        <div class="d-flex justify-content-center my-2">
+
+
+            <div class="p-2 bd-highlight"></div>
+            <div class="p-2 bd-highlight">
+
+
+                <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">Vehicle Id</label>
+                    <input type="number" v-model="submittedId" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                </div>
+
+                <button class="btn btn-primary" v-on:click="shareLocation">Share Location</button>
+
+
+
+            </div>
+            <div class="p-2 bd-highlight"></div>
+
+
+
+        </div>
+
+
+    </div>
+
+@section Scripts{
+    <script>
+        const { createApp, ref } = Vue;
+
+        const App = {
+            setup() {
+
+
+                console.log("----------Sharing Location----------ss")
+
+                const vehicleId = ref(null);
+                const submittedId = ref(null);
+
+
+                const shareLocation = () => {
+
+                    console.log("----------Sharing Location----------")
+                    console.log("----------Sharing Location----------")
+                    console.log("----------Sharing Location----------")
+
+                    if (submittedId.value != null) {
+
+                        vehicleId.value = submittedId.value;
+                        setInterval(function () {
+                            navigator.geolocation.getCurrentPosition(showPosition );
+
+                        }, 5000);
+
+                     }
+
+                }
+
+
+
+              //      navigator.geolocation.getCurrentPosition(showPosition);
+
+                
+
+
+                function showPosition(position) {
+                    let lat = position.coords.latitude;
+                    let lon = position.coords.longitude;
+
+                    console.log(lat);
+                    console.log(lon);
+
+                    SetLiveLocation(lat, lon);
+                    console.log("------Calling The Api------");
+                }
+
+
+                const SetLiveLocation = async (latitude, longitude) => {
+                    var liveLocationObject = {
+                        VehicleId: Number(submittedId.value),
+                        Latitude: latitude,
+                        Longitude: longitude,
+                        TimeStamp: Math.floor(Date.now() / 1000),
+                    };
+
+                    console.log(liveLocationObject);
+                    axios
+                        .post("/api/LiveLocation/AddLiveLocation", liveLocationObject)
+                        .then(function (response) {
+                            console.log("hi");
+
+                            console.log(response);
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
+                };
+
+
+                //      setInterval(function () {
+                //navigator.geolocation.getCurrentPosition(showPosition);
+
+                //  }, 5000);
+
+
+                return {  shareLocation, submittedId};
+            },
+
+        };
+
+        createApp(App).mount("#app");
+
+    </script>
+
+
+}
