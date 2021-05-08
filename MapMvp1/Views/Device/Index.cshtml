@@ -38,14 +38,138 @@
     <script>
         const { createApp, ref } = Vue;
 
+
+
+
+
+        
+
+
+
         const App = {
             setup() {
+
+               
+
+
+
+
+                let g = JSON.parse(localStorage.getItem("locationHistory"))
+                console.log(typeof g);
+
+                var firstTime = true;
+
+                try {
+                    console.log(g.length)
+                    firstTime=false;
+                }
+                catch (e) {
+                    console.log("----------Page Loading For First Time--------")
+                }
+
+
+
+
+
+
+                setInterval(function () {
+                    console.log("--------------Save Data To Internet--------------")
+                    SendLocationsToServer()
+                    console.log("--------------Save Data To Internet--------------")
+
+                }, 15000);
+
+
+
+
+
+
+
+                const SendLocationsToServer =  (latitude, longitude) => {
+                    let locations = JSON.parse(localStorage.getItem("locationHistory"))
+                    axios
+                        .post("/api/LiveLocation/AddLocationHistory", locations)
+                        .then(function (response) {
+                            console.log("hi");
+                            console.log(response);
+
+                            
+
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                            var lastLocationHistory = JSON.parse(localStorage.getItem("locationHistory"))
+                           
+                            localStorage['locationHistory'] = JSON.stringify([...lastLocationHistory, ...locations]);
+
+                        });
+
+                    localStorage['locationHistory'] = JSON.stringify([]);
+
+                };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
                 console.log("----------Sharing Location----------ss")
 
                 const vehicleId = ref(null);
                 const submittedId = ref(null);
+
+
+
+                var connection = new signalR.HubConnectionBuilder().withUrl("/LiveLocation").build();
+
+                console.log("--------Connection----------")
+                console.log(connection);
+                console.log("--------Connection----------")
+
+
+                //Disable send button until connection is established
+
+                connection
+                    .start()
+                    .then(function () {
+                        console.log("----Connection Id Here------ ");
+                        console.log("Connection Id");
+                        console.log(connection.connectionId);
+                        //console.log(connection.hub.id);
+                        console.log("----Connection Id Here------ ");
+
+                        console.log("connected");
+                    })
+                    .catch(function (err) {
+                        return console.error(err.toString());
+                    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
                 const shareLocation = () => {
@@ -93,17 +217,65 @@
                         TimeStamp: Math.floor(Date.now() / 1000),
                     };
 
-                    console.log(liveLocationObject);
-                    axios
-                        .post("/api/LiveLocation/AddLiveLocation", liveLocationObject)
-                        .then(function (response) {
-                            console.log("hi");
 
-                            console.log(response);
-                        })
-                        .catch(function (error) {
-                            console.log(error);
-                        });
+
+                    console.log(liveLocationObject);
+
+
+
+
+                    if (firstTime == true) {
+                        // first time
+
+
+
+                       // check for closing and opening browser
+
+                  
+                            localStorage['locationHistory'] = JSON.stringify([liveLocationObject]);
+
+
+                        //
+
+
+
+
+
+
+
+
+
+
+
+                        firstTime = false;
+                    }
+
+
+
+                    else {
+                        var lastLocationHistory = JSON.parse(localStorage.getItem("locationHistory"))
+
+                        localStorage['locationHistory'] = JSON.stringify([...lastLocationHistory, liveLocationObject]);
+
+                    }
+
+
+
+                    console.log(typeof JSON.parse(localStorage.getItem("locationHistory")));
+
+
+                    console.log("location From Db");
+                    console.log(JSON.parse(localStorage.getItem("locationHistory")));
+
+
+                    connection.invoke("SendLiveLocationV2", liveLocationObject.Latitude, liveLocationObject.Longitude, liveLocationObject.VehicleId, liveLocationObject.TimeStamp).catch(function (err) {
+
+
+                        return console.error(err.toString());
+                    });
+
+
+
                 };
 
 

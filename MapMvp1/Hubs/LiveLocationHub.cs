@@ -12,6 +12,18 @@ namespace MapMvp1.Hubs
 
 
 
+        //public async Task SendLiveLocationV2(decimal latitude, decimal longitude, string locationOn, string VehicleId)
+
+        public async Task SendLiveLocationV2(decimal latitude,decimal longitude  ,long VehicleId,long timeStamp)
+
+        {
+
+            await Clients.All.SendAsync("ReceiveLocationV2",latitude,longitude, VehicleId, timeStamp);
+        }
+
+
+
+
 
         public async Task SendLiveLocation(decimal latitude, decimal longitude, DateTime locationOn,string VehicleId)
         {

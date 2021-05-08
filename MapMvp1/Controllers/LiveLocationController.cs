@@ -31,6 +31,48 @@ namespace MapMvp1.Controllers
 
 
 
+
+        [HttpPost("AddLocationHistory")]
+
+        public async Task<IActionResult> AddLocationHistory(List<LiveLocationDto> liveLocationDtos)
+        {
+
+            var locationHistories = new List<LocationHistory>();
+
+
+
+            foreach (var liveLocationDto in liveLocationDtos)
+            {
+               var locationHistory = new LocationHistory();
+
+
+                locationHistory.Latitude = liveLocationDto.Latitude;
+                locationHistory.Longitude = liveLocationDto.Longitude;
+                locationHistory.VehicleId = liveLocationDto.VehicleId;
+                locationHistory.LocationOn = DateTimeConvertor.UnixTimeStampToDateTime(liveLocationDto.TimeStamp);
+
+
+
+                locationHistories.Add(locationHistory);
+
+
+
+
+            }
+
+
+            _db.LocationHistories.AddRange(locationHistories);
+
+            _db.SaveChanges();
+            
+            return Ok();
+        }
+
+
+
+
+
+
         [HttpPost("AddLiveLocation")]
         public async Task<IActionResult> AddLiveLocation(LiveLocationDto liveLocationDto)
         {

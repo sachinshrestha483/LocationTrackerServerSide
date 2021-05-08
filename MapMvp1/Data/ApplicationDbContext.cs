@@ -19,5 +19,9 @@ namespace MapMvp1.Data
         public DbSet<Vehicle> Vehicles { get; set; }
 
         public DbSet<LiveLocation> LiveLocations { get; set; }
+
+
+        public DbSet<LocationHistory> LocationHistories { get; set; }
+
     }
 }

@@ -226,19 +226,25 @@
                     .catch(function (err) {
                         return console.error(err.toString());
                     });
+                                                                                //datetime
 
+                connection.on("ReceiveLocationV2", function (latitude,longitude ,vehicleId,timeStamp) {
 
-
-                connection.on("ReceiveLocation", function (latitude, longitude, dateTime, vehicleId) {
                     console.log(" Data Received ");
 
-                    console.log(latitude + " " + longitude + "" + dateTime);
+                    console.log("latitude:" + latitude + "");
+                    console.log("longitude:" + longitude + "");
+
+                    console.log("vehicle Id:" + vehicleId + "");
+
+                    console.log("Time Stamp:" + timeStamp + "");
+
                     console.log("------------------------------");
 
-                    getNewValues(latitude, longitude, dateTime);
+                //    getNewValues(latitude, longitude);
                     console.log("------------------------------");
 
-                   drawMarkerOnMap(latitude, longitude, dateTime, vehicleId)
+                    drawMarkerOnMap(latitude, longitude, timeStamp, vehicleId)
 
                 });
 

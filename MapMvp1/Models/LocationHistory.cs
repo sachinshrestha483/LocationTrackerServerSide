@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace MapMvp1.Models
 {
-    public class LiveLocation
+    public class LocationHistory
     {
+
         public int Id { get; set; }
 
         public Vehicle Vehicle { get; set; }
@@ -15,18 +16,19 @@ namespace MapMvp1.Models
         public int VehicleId { get; set; }
 
 
-        public DateTime LocationOn { get; set; }
         [Column(TypeName = "decimal(18,15)")]
-        public decimal Latitude { get; set; }
+
+        public decimal Latitude  { get; set; }
         [Column(TypeName = "decimal(18,15)")]
+
         public decimal Longitude { get; set; }
 
 
-        public bool IsActive { get; set; }
 
-        public string Note { get; set; }
+        public DateTimeOffset LocationOn { get; set; }
 
-        public DateTimeOffset LastUpdated { get; set; }
+
+
 
     }
 }
